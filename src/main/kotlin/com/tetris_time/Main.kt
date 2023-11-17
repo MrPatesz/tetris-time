@@ -1,4 +1,4 @@
-package com.example
+package com.tetris_time
 
 import javafx.application.Application
 
