@@ -3,6 +3,7 @@ package com.tetris_time.renderables
 import com.tetris_time.enums.FieldColor
 import com.tetris_time.enums.MoveDirection
 import javafx.scene.canvas.Canvas
+import javafx.scene.paint.Color
 
 class Field(
     private var xIndex: Int,
@@ -24,9 +25,13 @@ class Field(
         val x = WIDTH * xIndex
         val y = HEIGHT * yIndex
 
+        // TODO display picture of field
+        //  context.drawImage(sun, sunX.toDouble(), sunY.toDouble())
         val context = canvas.graphicsContext2D
+        context.fill = Color.BLACK
+        context.fillRect(x, y, WIDTH, HEIGHT)
         context.fill = fieldColor.color
-        context.fillRect(x, y, WIDTH, HEIGHT) // TODO display picture of field?
+        context.fillRect(x + 1, y + 1, WIDTH - 2, HEIGHT - 2)
     }
 
     fun move(direction: MoveDirection) {
@@ -34,7 +39,7 @@ class Field(
         require(xIndex < 9 || direction != MoveDirection.RIGHT)
         require(yIndex < 19 || direction != MoveDirection.DOWN)
 
-        when(direction) {
+        when (direction) {
             MoveDirection.LEFT -> xIndex--
             MoveDirection.RIGHT -> xIndex++
             MoveDirection.DOWN -> yIndex++
