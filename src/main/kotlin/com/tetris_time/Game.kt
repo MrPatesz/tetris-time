@@ -19,7 +19,7 @@ import kotlin.random.Random
 class Game : Application() {
 
     companion object {
-        private const val WIDTH = 10 * 40
+        private const val WIDTH = 10 * 40 + 40 + 4 * 40 // map + gap + next tetromino
         private const val HEIGHT = 20 * 40
     }
 
@@ -29,10 +29,11 @@ class Game : Application() {
     // TODO load images
     // private lateinit var space: Image
 
-    private var currentTetromino: Tetromino = getRandomTetromino()
+    private val map = Map()
 
-    // TODO rows of Fields instead
-    private val placedTetrominos: MutableList<Tetromino> = mutableListOf()
+    private var currentTetromino: Tetromino = getRandomTetromino().also { it.place() }
+
+    private var nextTetromino: Tetromino = getRandomTetromino()
 
     private var lastSystemUpdateTime: Long = System.nanoTime()
 
@@ -98,11 +99,11 @@ class Game : Application() {
         // clear canvas
         graphicsContext.clearRect(0.0, 0.0, WIDTH.toDouble(), HEIGHT.toDouble())
 
-        // draw background
-        Map().render(graphicsContext.canvas)
+        // draw map
+        map.render(graphicsContext.canvas)
 
-        // draw rows
-        placedTetrominos.forEach{ it.render(graphicsContext.canvas) }
+        // draw next Tetromino
+        nextTetromino.render(graphicsContext.canvas)
 
         // draw current Tetromino
         currentTetromino.render(graphicsContext.canvas)
@@ -115,7 +116,7 @@ class Game : Application() {
 
         if (latestKey == KeyCode.ESCAPE) {
             paused = !paused
-        } else if(!paused) {
+        } else if (!paused) {
             moveOrPlaceCurrentTetromino(
                 when (latestKey) {
                     KeyCode.LEFT -> MoveDirection.LEFT
@@ -131,18 +132,18 @@ class Game : Application() {
 
     private fun moveOrPlaceCurrentTetromino(direction: MoveDirection) {
         try {
-            currentTetromino.move(direction)
+            currentTetromino.move(direction, map.rowsOfPlacedFields)
         } catch (e: Exception) {
-            // TODO add fields to rows instead
-            placedTetrominos.add(currentTetromino)
-            currentTetromino = getRandomTetromino()
+            map.addFieldsOfTetromino(currentTetromino)
+            currentTetromino = nextTetromino.also { it.place() }
+            nextTetromino = getRandomTetromino()
         }
     }
 
     private fun getRandomTetromino(): Tetromino {
         val random = Random.nextInt(0, 7)
 
-        return when(random){
+        return when (random) {
             0 -> IBlock()
             1 -> JBlock()
             2 -> LBlock()

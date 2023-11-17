@@ -6,15 +6,16 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.paint.Color
 
 data class Field(
-    private var xIndex: Int,
-    private var yIndex: Int,
+    var xIndex: Int,
+    var yIndex: Int,
     private val fieldColor: FieldColor = FieldColor.GRAY,
-    // TODO offset?
 ) : Renderable {
     init {
         require(xIndex in 0..<10)
         require(yIndex in 0..<20)
     }
+
+    var xOffset: Int = 0
 
     companion object {
         const val WIDTH = 40.0
@@ -22,7 +23,7 @@ data class Field(
     }
 
     override fun render(canvas: Canvas) {
-        val x = WIDTH * xIndex
+        val x = WIDTH * (xIndex + xOffset)
         val y = HEIGHT * yIndex
 
         // TODO display picture of field
