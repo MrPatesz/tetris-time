@@ -2,4 +2,4 @@
 
 Homework project for the Kotlin-based Software Development subject.
 
-Run the application with `./gradlew run`.
+Run the application by running the *main()* function.
