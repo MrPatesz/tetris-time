@@ -14,6 +14,7 @@ import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.KeyCode
 import javafx.stage.Stage
 import kotlin.Exception
+import kotlin.random.Random
 
 class Game : Application() {
 
@@ -28,7 +29,7 @@ class Game : Application() {
     // TODO load images
     // private lateinit var space: Image
 
-    private var currentTetromino: Tetromino = IBlock() // TODO getNextTetromino() { create random }
+    private var currentTetromino: Tetromino = getRandomTetromino()
 
     // TODO rows of Fields instead
     private val placedTetrominos: MutableList<Tetromino> = mutableListOf()
@@ -90,7 +91,7 @@ class Game : Application() {
         // perform world updates
         performInputUpdate()
         if (elapsedNanos > 1_000_000_000 && !paused) {
-            moveOrPlaceTetromino(MoveDirection.DOWN)
+            moveOrPlaceCurrentTetromino(MoveDirection.DOWN)
             lastSystemUpdateTime = currentNanoTime
         }
 
@@ -115,7 +116,7 @@ class Game : Application() {
         if (latestKey == KeyCode.ESCAPE) {
             paused = !paused
         } else if(!paused) {
-            moveOrPlaceTetromino(
+            moveOrPlaceCurrentTetromino(
                 when (latestKey) {
                     KeyCode.LEFT -> MoveDirection.LEFT
                     KeyCode.RIGHT -> MoveDirection.RIGHT
@@ -128,12 +129,28 @@ class Game : Application() {
         latestKey = null
     }
 
-    private fun moveOrPlaceTetromino(direction: MoveDirection) {
+    private fun moveOrPlaceCurrentTetromino(direction: MoveDirection) {
         try {
             currentTetromino.move(direction)
         } catch (e: Exception) {
+            // TODO add fields to rows instead
             placedTetrominos.add(currentTetromino)
-            currentTetromino = TBlock()
+            currentTetromino = getRandomTetromino()
+        }
+    }
+
+    private fun getRandomTetromino(): Tetromino {
+        val random = Random.nextInt(0, 7)
+
+        return when(random){
+            0 -> IBlock()
+            1 -> JBlock()
+            2 -> LBlock()
+            3 -> OBlock()
+            4 -> SBlock()
+            5 -> TBlock()
+            6 -> ZBlock()
+            else -> throw Exception()
         }
     }
 }
