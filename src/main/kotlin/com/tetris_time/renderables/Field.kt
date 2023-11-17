@@ -5,7 +5,7 @@ import com.tetris_time.enums.MoveDirection
 import javafx.scene.canvas.Canvas
 import javafx.scene.paint.Color
 
-class Field(
+data class Field(
     private var xIndex: Int,
     private var yIndex: Int,
     private val fieldColor: FieldColor = FieldColor.GRAY,
@@ -35,9 +35,9 @@ class Field(
     }
 
     fun move(direction: MoveDirection) {
-        require(xIndex > 0 || direction != MoveDirection.LEFT)
-        require(xIndex < 9 || direction != MoveDirection.RIGHT)
-        require(yIndex < 19 || direction != MoveDirection.DOWN)
+        require(xIndex > 0 || direction != MoveDirection.LEFT) { "Cannot go further left!" }
+        require(xIndex < 9 || direction != MoveDirection.RIGHT) { "Cannot go further right!" }
+        require(yIndex < 19 || direction != MoveDirection.DOWN) { "Cannot go further down!" }
 
         when (direction) {
             MoveDirection.LEFT -> xIndex--
