@@ -2,8 +2,6 @@ package com.tetris_time
 
 import com.tetris_time.enums.MoveDirection
 import com.tetris_time.renderables.Map
-import com.tetris_time.renderables.Tetromino
-import com.tetris_time.renderables.tetrominos.*
 import javafx.animation.AnimationTimer
 import javafx.application.Application
 import javafx.event.EventHandler
@@ -14,7 +12,6 @@ import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.KeyCode
 import javafx.stage.Stage
 import kotlin.Exception
-import kotlin.random.Random
 
 class Game : Application() {
 
@@ -30,10 +27,6 @@ class Game : Application() {
     // private lateinit var space: Image
 
     private val map = Map()
-
-    private var currentTetromino: Tetromino = getRandomTetromino().also { it.place() }
-
-    private var nextTetromino: Tetromino = getRandomTetromino()
 
     private var lastSystemUpdateTime: Long = System.nanoTime()
 
@@ -92,7 +85,7 @@ class Game : Application() {
         // perform world updates
         performInputUpdate()
         if (elapsedNanos > 1_000_000_000 && !paused) {
-            moveOrPlaceCurrentTetromino(MoveDirection.DOWN)
+            map.moveCurrentTetromino(MoveDirection.DOWN)
             lastSystemUpdateTime = currentNanoTime
         }
 
@@ -101,12 +94,6 @@ class Game : Application() {
 
         // draw map
         map.render(graphicsContext.canvas)
-
-        // draw next Tetromino
-        nextTetromino.render(graphicsContext.canvas)
-
-        // draw current Tetromino
-        currentTetromino.render(graphicsContext.canvas)
     }
 
     private fun performInputUpdate() {
@@ -117,7 +104,7 @@ class Game : Application() {
         if (latestKey == KeyCode.ESCAPE) {
             paused = !paused
         } else if (!paused) {
-            moveOrPlaceCurrentTetromino(
+            map.moveCurrentTetromino(
                 when (latestKey) {
                     KeyCode.LEFT -> MoveDirection.LEFT
                     KeyCode.RIGHT -> MoveDirection.RIGHT
@@ -128,30 +115,5 @@ class Game : Application() {
         }
 
         latestKey = null
-    }
-
-    private fun moveOrPlaceCurrentTetromino(direction: MoveDirection) {
-        try {
-            currentTetromino.move(direction, map.rowsOfPlacedFields)
-        } catch (e: Exception) {
-            map.addFieldsOfTetromino(currentTetromino)
-            currentTetromino = nextTetromino.also { it.place() }
-            nextTetromino = getRandomTetromino()
-        }
-    }
-
-    private fun getRandomTetromino(): Tetromino {
-        val random = Random.nextInt(0, 7)
-
-        return when (random) {
-            0 -> IBlock()
-            1 -> JBlock()
-            2 -> LBlock()
-            3 -> OBlock()
-            4 -> SBlock()
-            5 -> TBlock()
-            6 -> ZBlock()
-            else -> throw Exception()
-        }
     }
 }

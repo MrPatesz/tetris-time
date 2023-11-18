@@ -8,22 +8,10 @@ import javafx.scene.paint.Color
 data class Field(
     var xIndex: Int,
     var yIndex: Int,
-    private val fieldColor: FieldColor = FieldColor.GRAY,
+    private val fieldColor: FieldColor,
 ) : Renderable {
-    init {
-        require(xIndex in 0..<10)
-        require(yIndex in 0..<20)
-    }
-
-    var xOffset: Int = 0
-
-    companion object {
-        const val WIDTH = 40.0
-        const val HEIGHT = 40.0
-    }
-
     override fun render(canvas: Canvas) {
-        val x = WIDTH * (xIndex + xOffset)
+        val x = WIDTH * xIndex
         val y = HEIGHT * yIndex
 
         // TODO display picture of field
@@ -36,14 +24,19 @@ data class Field(
     }
 
     fun move(direction: MoveDirection) {
-        require(xIndex > 0 || direction != MoveDirection.LEFT) { "Cannot go further left!" }
-        require(xIndex < 9 || direction != MoveDirection.RIGHT) { "Cannot go further right!" }
-        require(yIndex < 19 || direction != MoveDirection.DOWN) { "Cannot go further down!" }
-
         when (direction) {
             MoveDirection.LEFT -> xIndex--
             MoveDirection.RIGHT -> xIndex++
             MoveDirection.DOWN -> yIndex++
         }
+    }
+
+    fun clashes(otherField: Field): Boolean {
+        return xIndex == otherField.xIndex && yIndex == otherField.yIndex
+    }
+
+    companion object {
+        const val WIDTH = 40.0
+        const val HEIGHT = 40.0
     }
 }

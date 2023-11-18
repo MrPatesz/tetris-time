@@ -5,43 +5,35 @@ import javafx.scene.canvas.Canvas
 
 abstract class Tetromino(private var fields: List<Field>) : Renderable {
     init {
-        fields.forEach { it.xOffset = 8 }
+        fields.forEach { it.xIndex += NEXT_X_OFFSET }
     }
 
     final override fun render(canvas: Canvas) {
         fields.forEach { it.render(canvas) }
     }
 
-    fun move(direction: MoveDirection, rowsOfPlacedFields: MutableList<MutableList<Field>>) {
-        require(fields.all { it.xOffset == 0 })
-        try {
-            val newFields = fields.map { it.copy() }
-            newFields.forEach { it.move(direction) }
+    fun getMovedFields(direction: MoveDirection): List<Field> {
+        return fields.map { it.copy().apply { move(direction) } }
+    }
 
-            newFields.forEach { field ->
-                val xd = rowsOfPlacedFields[field.yIndex].find { field.xIndex == it.xIndex }
-                if (xd != null) {
-                    throw Exception("Place Tetromino!")
-                }
-            }
+    fun setFields(newFields: List<Field>) {
+        fields = newFields
+    }
 
-            fields = newFields
-        } catch (e: Exception) {
-            check(e.message != "Cannot go further down!")
-            check(e.message != "Place Tetromino!")
+    fun addFieldsToRows(rows: MutableList<Row>): List<Row> {
+        fields.forEach {
+            val row = rows.find { row -> row.getYIndex() == it.yIndex }
+            row!!.addField(it)
         }
+
+        return rows.filter { it.isFilled() }
     }
-
-    private fun canMove(direction: MoveDirection, rowsOfPlacedFields: MutableList<MutableList<Field>>){
-
-    }
-
-    // TODO rotate() {}
 
     fun place() {
-        // TODO throw Exception if cannot place
-        fields.forEach { it.xOffset = 0 }
+        fields.forEach { it.xIndex -= NEXT_X_OFFSET }
     }
 
-    fun getFields() = fields
+    companion object {
+        const val NEXT_X_OFFSET = 8
+    }
 }
