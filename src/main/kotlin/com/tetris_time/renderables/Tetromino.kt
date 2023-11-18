@@ -5,7 +5,10 @@ import javafx.scene.canvas.Canvas
 
 abstract class Tetromino(var fields: List<Field>) : Renderable {
     init {
-        fields.forEach { it.xIndex += NEXT_X_OFFSET }
+        fields.forEach {
+            it.xIndex += NEXT_X_OFFSET
+            it.yIndex += NEXT_Y_OFFSET
+        }
     }
 
     final override fun render(canvas: Canvas) {
@@ -43,10 +46,14 @@ abstract class Tetromino(var fields: List<Field>) : Renderable {
     }
 
     fun place() {
-        fields.forEach { it.xIndex -= NEXT_X_OFFSET }
+        fields.forEach {
+            it.xIndex -= NEXT_X_OFFSET
+            it.yIndex -= NEXT_Y_OFFSET
+        }
     }
 
     companion object {
         const val NEXT_X_OFFSET = 8
+        const val NEXT_Y_OFFSET = 1
     }
 }

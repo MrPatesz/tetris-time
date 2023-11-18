@@ -12,7 +12,7 @@ class Table(
     override fun render(canvas: Canvas) {
         val context = canvas.graphicsContext2D
 
-        var x = Field.SIZE * xIndex
+        val x = Field.SIZE * xIndex
         var y = Field.SIZE * yIndex
         var w = 4 * Field.SIZE
 

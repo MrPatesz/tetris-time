@@ -27,14 +27,14 @@ class Map : Renderable {
 
         // draw next Tetromino
         context.fill = Color.BLACK
-        context.fillRect(11 * Field.SIZE, 0.0, 4 * Field.SIZE, 2 * Field.SIZE)
+        context.fillRect(11 * Field.SIZE, Field.SIZE, 4 * Field.SIZE, 2 * Field.SIZE)
         context.fill = Color.WHITE
-        context.fillRect(11 * Field.SIZE + 1, 1.0, 4 * Field.SIZE - 2, 2 * Field.SIZE - 2)
+        context.fillRect(11 * Field.SIZE + 1, Field.SIZE + 1.0, 4 * Field.SIZE - 2, 2 * Field.SIZE - 2)
         nextTetromino.render(canvas)
 
         // draw score
         context.fill = Color.BLACK
-        context.fillText("You have $score points!", 11 * Field.SIZE, 3 * Field.SIZE)
+        context.fillText("You have $score points!", 11 * Field.SIZE, 4 * Field.SIZE)
     }
 
     fun moveCurrentTetromino(direction: MoveDirection) {

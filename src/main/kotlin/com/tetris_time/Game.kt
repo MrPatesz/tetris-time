@@ -13,7 +13,6 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.KeyCode
 import javafx.stage.Stage
-import kotlin.Exception
 
 class Game : Application() {
 
@@ -28,16 +27,23 @@ class Game : Application() {
     // TODO load images
     // private lateinit var space: Image
 
-    private val highScores: List<Pair<String, String>> = listOf()
+    private val highScores: List<Pair<String, String>> = mutableListOf<Pair<String, String>>().run {
+        for (i in 0..<10) {
+            add(Pair("${i + 1}.", ""))
+        }
+        toList()
+    }
 
-    private val highScoresTable: Table = Table("HighScores", highScores, 11, 6)
+    private val highScoresTable: Table = Table("HighScores", highScores, 11, 5)
 
-    private val legend: Table = Table("Legend", listOf(
-        Pair("Enter", "Start"),
-        Pair("Escape", "Pause/Resume"),
-        Pair("Space", "Rotate"),
-        Pair("Arrows", "Move"),
-    ), 11, 12)
+    private val legend: Table = Table(
+        "Legend", listOf(
+            Pair("Enter", "Start"),
+            Pair("Escape", "Stop/Resume"),
+            Pair("Space", "Rotate"),
+            Pair("Arrows", "Move"),
+        ), 11, 13
+    )
 
     private val map = Map()
 
