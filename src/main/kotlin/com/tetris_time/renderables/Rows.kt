@@ -13,29 +13,20 @@ class Rows : Renderable {
         rows.forEach { it.render(canvas) }
     }
 
-    fun placeTetromino(tetromino: Tetromino) {
-        val filledRows = tetromino.addFieldsToRows(rows)
+    fun placeTetromino(tetromino: Tetromino): Int {
+        val numberOfFilledRows = tetromino.addFieldsToRows(rows)
 
-        val numberOfFilledRows = filledRows.size // TODO calculate points
+        if(numberOfFilledRows == 0) return 0
 
-        if(numberOfFilledRows == 0) return
+        rows = rows.filter { !it.isFilled() }.toMutableList()
 
-        val minIndexOfFilledRows = filledRows.minOf { it.getYIndex() }
-
-        // moving rows down above filled rows
-        rows.forEach {
-            if(it.getYIndex() < minIndexOfFilledRows){
-                it.move(it.getYIndex() + numberOfFilledRows)
-            }
+        for(i in 0..<numberOfFilledRows){
+            rows.add(0, Row(0))
         }
 
-        // clearing and moving filled rows
-        for(i in 0..<numberOfFilledRows) {
-            rows.find { it.isFilled() }?.apply {
-                clear()
-                move(i)
-            }
-        }
+        rows.mapIndexed { index, it -> it.move(index) }
+
+        return numberOfFilledRows
     }
 
     fun doFieldsClash(fields: List<Field>): Boolean {

@@ -4,11 +4,14 @@ import com.tetris_time.enums.FieldColor
 import com.tetris_time.enums.MoveDirection
 import com.tetris_time.getRandomTetromino
 import javafx.scene.canvas.Canvas
+import javafx.scene.paint.Color
+import kotlin.math.pow
 
 class Map : Renderable {
     private val rows = Rows()
     private var currentTetromino: Tetromino = getRandomTetromino().also { it.place() }
     private var nextTetromino: Tetromino = getRandomTetromino()
+    private var score = 0
 
     override fun render(canvas: Canvas) {
         // draw background
@@ -22,24 +25,39 @@ class Map : Renderable {
 
         // draw next Tetromino
         nextTetromino.render(canvas)
+
+        // draw score
+        val context = canvas.graphicsContext2D
+        context.fill = Color.BLACK
+        context.fillText("You have ${score} points!", 11 * 40.0, 3 * 40.0)
     }
 
     fun moveCurrentTetromino(direction: MoveDirection) {
         val newFields = currentTetromino.getMovedFields(direction)
 
-        val fieldOutOfBounds = newFields.find {it.xIndex !in 0..<10 || it.yIndex !in 0..<20 }
-
-        val cannotMove = fieldOutOfBounds != null || rows.doFieldsClash(newFields)
-
-        if (cannotMove) {
+        if (moveNotAllowed(newFields)) {
             if (direction == MoveDirection.DOWN) {
-                rows.placeTetromino(currentTetromino)
+                score += rows.placeTetromino(currentTetromino).toDouble().pow(2).toInt()
                 currentTetromino = nextTetromino.also { it.place() }
                 nextTetromino = getRandomTetromino()
             }
         } else {
             currentTetromino.setFields(newFields)
         }
+    }
+
+    fun rotateCurrentTetromino() {
+        val newFields = currentTetromino.getRotatedFields()
+
+        if (!moveNotAllowed(newFields)) {
+            currentTetromino.setFields(newFields)
+        }
+    }
+
+    fun moveNotAllowed(newFields: List<Field>): Boolean {
+        val fieldOutOfBounds = newFields.find { it.xIndex !in 0..<10 || it.yIndex !in 0..<20 }
+
+        return fieldOutOfBounds != null || rows.doFieldsClash(newFields)
     }
 
     companion object {

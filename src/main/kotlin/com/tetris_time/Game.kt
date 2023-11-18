@@ -64,7 +64,7 @@ class Game : Application() {
 
     private fun prepareActionHandlers() {
         mainScene.onKeyPressed = EventHandler { event ->
-            if (listOf(*allowedDirectionKeys.toTypedArray(), KeyCode.ESCAPE).contains(event.code)) {
+            if (listOf(*allowedDirectionKeys.toTypedArray(), KeyCode.ESCAPE, KeyCode.SPACE).contains(event.code)) {
                 latestKey = event.code
             }
         }
@@ -94,6 +94,12 @@ class Game : Application() {
 
         // draw map
         map.render(graphicsContext.canvas)
+
+        // draw scoreboard
+        // TODO
+
+        // draw start/pause buttons
+        // TODO
     }
 
     private fun performInputUpdate() {
@@ -104,14 +110,18 @@ class Game : Application() {
         if (latestKey == KeyCode.ESCAPE) {
             paused = !paused
         } else if (!paused) {
-            map.moveCurrentTetromino(
-                when (latestKey) {
-                    KeyCode.LEFT -> MoveDirection.LEFT
-                    KeyCode.RIGHT -> MoveDirection.RIGHT
-                    KeyCode.DOWN -> MoveDirection.DOWN
-                    else -> throw Exception("Direction not allowed!")
-                }
-            )
+            if (latestKey == KeyCode.SPACE) {
+                map.rotateCurrentTetromino()
+            } else {
+                map.moveCurrentTetromino(
+                    when (latestKey) {
+                        KeyCode.LEFT -> MoveDirection.LEFT
+                        KeyCode.RIGHT -> MoveDirection.RIGHT
+                        KeyCode.DOWN -> MoveDirection.DOWN
+                        else -> throw Exception("Direction not allowed!")
+                    }
+                )
+            }
         }
 
         latestKey = null
