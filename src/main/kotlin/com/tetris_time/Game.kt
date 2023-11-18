@@ -15,6 +15,7 @@ import javafx.scene.control.TextInputDialog
 import javafx.scene.input.KeyCode
 import javafx.stage.Stage
 import java.io.File
+import kotlin.math.sqrt
 
 class Game : Application() {
 
@@ -39,8 +40,9 @@ class Game : Application() {
         ), 11, 13
     )
 
-    private var map = Map(::onRoundEnd)
+    private var map = Map(::onRoundEnd, ::onScoreChange)
 
+    private var systemUpdateInterval = 1_000_000_000
     private var lastSystemUpdateTime: Long = System.nanoTime()
 
     private val allowedDirectionKeys = listOf(KeyCode.LEFT, KeyCode.RIGHT, KeyCode.DOWN)
@@ -50,6 +52,10 @@ class Game : Application() {
     private var paused: Boolean = false
 
     private var started = false
+
+    private fun onScoreChange(newScore: Int) {
+        systemUpdateInterval = 1_000_000_000 / sqrt(sqrt(newScore.toDouble())).toInt()
+    }
 
     private fun onRoundEnd() {
         started = false
@@ -144,13 +150,13 @@ class Game : Application() {
 
         // perform world updates
         performInputUpdate()
-        if (elapsedNanos > 1_000_000_000 && !paused && started) {
+        if (elapsedNanos > systemUpdateInterval && !paused && started) {
             map.moveCurrentTetromino(MoveDirection.DOWN)
             lastSystemUpdateTime = currentNanoTime
         }
 
         // clear canvas
-        graphicsContext.clearRect(0.0, 0.0, WIDTH.toDouble(), HEIGHT.toDouble())
+        graphicsContext.clearRect(0.0, 0.0, WIDTH, HEIGHT)
 
         // draw map
         map.render(graphicsContext.canvas)
@@ -167,7 +173,7 @@ class Game : Application() {
             null -> return
             KeyCode.ENTER -> {
                 if (!map.isMapEmpty()) {
-                    map = Map(::onRoundEnd)
+                    map = Map(::onRoundEnd, ::onScoreChange)
                 }
                 started = true
             }
