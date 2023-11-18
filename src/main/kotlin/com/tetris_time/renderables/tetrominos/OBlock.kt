@@ -11,4 +11,8 @@ class OBlock : Tetromino(
         Field(xIndex = 3, yIndex = 1, fieldColor = FieldColor.YELLOW),
         Field(xIndex = 4, yIndex = 1, fieldColor = FieldColor.YELLOW),
     )
-)
+) {
+    override fun getRotatedFields(): List<Field> {
+        return fields
+    }
+}

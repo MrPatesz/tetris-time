@@ -42,7 +42,7 @@ class Map : Renderable {
                 nextTetromino = getRandomTetromino()
             }
         } else {
-            currentTetromino.setFields(newFields)
+            currentTetromino.fields = newFields
         }
     }
 
@@ -50,7 +50,7 @@ class Map : Renderable {
         val newFields = currentTetromino.getRotatedFields()
 
         if (!moveNotAllowed(newFields)) {
-            currentTetromino.setFields(newFields)
+            currentTetromino.fields = newFields
         }
     }
 

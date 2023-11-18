@@ -3,7 +3,7 @@ package com.tetris_time.renderables
 import com.tetris_time.enums.MoveDirection
 import javafx.scene.canvas.Canvas
 
-abstract class Tetromino(private var fields: List<Field>) : Renderable {
+abstract class Tetromino(var fields: List<Field>) : Renderable {
     init {
         fields.forEach { it.xIndex += NEXT_X_OFFSET }
     }
@@ -12,7 +12,7 @@ abstract class Tetromino(private var fields: List<Field>) : Renderable {
         fields.forEach { it.render(canvas) }
     }
 
-    fun getRotatedFields(): List<Field> {
+    open fun getRotatedFields(): List<Field> {
         val minXIndex = fields.minOf { it.xIndex }
         val minYIndex = fields.minOf { it.yIndex }
         val xIndices = fields.map { it.xIndex - minXIndex }
@@ -31,10 +31,6 @@ abstract class Tetromino(private var fields: List<Field>) : Renderable {
 
     fun getMovedFields(direction: MoveDirection): List<Field> {
         return fields.map { it.copy().apply { move(direction) } }
-    }
-
-    fun setFields(newFields: List<Field>) {
-        fields = newFields
     }
 
     fun addFieldsToRows(rows: MutableList<Row>): Int {

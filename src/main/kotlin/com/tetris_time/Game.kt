@@ -36,6 +36,8 @@ class Game : Application() {
 
     private var paused: Boolean = false
 
+    private var started = false
+
     override fun start(mainStage: Stage) {
         mainStage.title = "Tetris Time"
 
@@ -64,7 +66,10 @@ class Game : Application() {
 
     private fun prepareActionHandlers() {
         mainScene.onKeyPressed = EventHandler { event ->
-            if (listOf(*allowedDirectionKeys.toTypedArray(), KeyCode.ESCAPE, KeyCode.SPACE).contains(event.code)) {
+            if (listOf(*allowedDirectionKeys.toTypedArray(), KeyCode.ESCAPE, KeyCode.SPACE, KeyCode.ENTER).contains(
+                    event.code
+                )
+            ) {
                 latestKey = event.code
             }
         }
@@ -84,7 +89,7 @@ class Game : Application() {
 
         // perform world updates
         performInputUpdate()
-        if (elapsedNanos > 1_000_000_000 && !paused) {
+        if (elapsedNanos > 1_000_000_000 && !paused && started) {
             map.moveCurrentTetromino(MoveDirection.DOWN)
             lastSystemUpdateTime = currentNanoTime
         }
@@ -103,27 +108,34 @@ class Game : Application() {
     }
 
     private fun performInputUpdate() {
-        if (latestKey == null) {
-            return
-        }
+        when (latestKey) {
+            null -> return
+            KeyCode.ENTER -> started = true
+            KeyCode.ESCAPE -> {
+                if (started) {
+                    paused = !paused
+                }
+            }
 
-        if (latestKey == KeyCode.ESCAPE) {
-            paused = !paused
-        } else if (!paused) {
-            if (latestKey == KeyCode.SPACE) {
-                map.rotateCurrentTetromino()
-            } else {
-                map.moveCurrentTetromino(
-                    when (latestKey) {
-                        KeyCode.LEFT -> MoveDirection.LEFT
-                        KeyCode.RIGHT -> MoveDirection.RIGHT
-                        KeyCode.DOWN -> MoveDirection.DOWN
-                        else -> throw Exception("Direction not allowed!")
-                    }
-                )
+            else -> {
+                if (paused || !started) {
+                    return
+                }
+
+                if (latestKey == KeyCode.SPACE) {
+                    map.rotateCurrentTetromino()
+                } else {
+                    map.moveCurrentTetromino(
+                        when (latestKey) {
+                            KeyCode.LEFT -> MoveDirection.LEFT
+                            KeyCode.RIGHT -> MoveDirection.RIGHT
+                            KeyCode.DOWN -> MoveDirection.DOWN
+                            else -> throw Exception("Direction not allowed!")
+                        }
+                    )
+                }
             }
         }
-
         latestKey = null
     }
 }
