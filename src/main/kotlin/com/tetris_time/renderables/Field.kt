@@ -21,7 +21,9 @@ data class Field(
 
         val shadow = Lighting()
         shadow.diffuseConstant = 1.5
-        context.setEffect(shadow)
+        if (fieldColor != FieldColor.GRAY) {
+            context.setEffect(shadow)
+        }
         context.fill = fieldColor.color
         context.fillRect(x + 1, y + 1, SIZE - 2, SIZE - 2)
         context.setEffect(null)
@@ -33,10 +35,6 @@ data class Field(
             MoveDirection.RIGHT -> xIndex++
             MoveDirection.DOWN -> yIndex++
         }
-    }
-
-    fun clashes(otherField: Field): Boolean {
-        return xIndex == otherField.xIndex && yIndex == otherField.yIndex
     }
 
     companion object {

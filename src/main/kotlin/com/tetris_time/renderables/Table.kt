@@ -16,27 +16,33 @@ class Table(
         var y = Field.SIZE * yIndex
         var w = 4 * Field.SIZE
 
-        fun renderRect(_x: Double, _y: Double, _w: Double, _h: Double) {
-            context.fill = Color.BLACK
-            context.fillRect(_x, _y, _w, _h)
-            context.fill = Color.WHITE
-            context.fillRect(_x + 1, _y + 1, _w - 2, _h - 2)
-        }
+        renderRect(canvas, x - 1, y - 1, w + 2, (1 + data.size) * ROW_HEIGHT + 2)
 
-        renderRect(x, y, w, _h = ROW_HEIGHT)
+        renderRect(canvas, x, y, w, ROW_HEIGHT)
         context.fill = Color.BLACK
         context.fillText(title, x + Field.SIZE * 1.3, y + TEXT_OFFSET)
         y += ROW_HEIGHT
         w /= 2
 
         data.forEach {
-            renderRect(x, y, w, ROW_HEIGHT)
-            renderRect(x + w, y, w, ROW_HEIGHT)
+            renderRect(canvas, x, y, w, ROW_HEIGHT)
             context.fill = Color.BLACK
             context.fillText(it.first, x + 5, y + TEXT_OFFSET)
+
+            renderRect(canvas, x + w, y, w, ROW_HEIGHT)
+            context.fill = Color.BLACK
             context.fillText(it.second, x + w + 5, y + TEXT_OFFSET)
+
             y += ROW_HEIGHT
         }
+    }
+
+    private fun renderRect(canvas: Canvas, x: Double, y: Double, w: Double, h: Double) {
+        val context = canvas.graphicsContext2D
+        context.fill = Color.BLACK
+        context.fillRect(x, y, w, h)
+        context.fill = Color.WHITESMOKE
+        context.fillRect(x + 1, y + 1, w - 2, h - 2)
     }
 
     companion object {

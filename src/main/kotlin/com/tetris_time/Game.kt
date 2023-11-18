@@ -13,6 +13,7 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.control.TextInputDialog
 import javafx.scene.input.KeyCode
+import javafx.scene.paint.Color
 import javafx.stage.Stage
 import java.io.File
 import kotlin.math.sqrt
@@ -90,6 +91,7 @@ class Game : Application() {
 
     override fun start(mainStage: Stage) {
         mainStage.title = "Tetris Time"
+        mainStage.isResizable = false
 
         val root = Group()
         mainScene = Scene(root)
@@ -158,6 +160,10 @@ class Game : Application() {
         // clear canvas
         graphicsContext.clearRect(0.0, 0.0, WIDTH, HEIGHT)
 
+        // draw background
+        graphicsContext.fill = Color.SLATEBLUE
+        graphicsContext.fillRect(0.0, 0.0, WIDTH, HEIGHT)
+
         // draw map
         map.render(graphicsContext.canvas)
 
@@ -172,7 +178,7 @@ class Game : Application() {
         when (latestKey) {
             null -> return
             KeyCode.ENTER -> {
-                if (!map.isMapEmpty()) {
+                if (!map.isMapEmpty() && !started) {
                     map = Map(::onRoundEnd, ::onScoreChange)
                 }
                 started = true

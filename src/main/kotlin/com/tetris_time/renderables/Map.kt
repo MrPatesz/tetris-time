@@ -5,6 +5,7 @@ import com.tetris_time.enums.MoveDirection
 import com.tetris_time.getRandomTetromino
 import javafx.scene.canvas.Canvas
 import javafx.scene.paint.Color
+import javafx.scene.text.Font
 import kotlin.math.pow
 
 class Map(private val onRoundEnd: () -> Unit, private val onScoreChange: (Int) -> Unit) : Renderable {
@@ -19,6 +20,8 @@ class Map(private val onRoundEnd: () -> Unit, private val onScoreChange: (Int) -
         val context = canvas.graphicsContext2D
 
         // draw background
+        context.fill = Color.BLACK
+        context.fillRect(-1.0, -1.0, 10 * Field.SIZE + 2, 20 * Field.SIZE + 2)
         backgroundFields.forEach { it.render(canvas) }
 
         // draw placed fields
@@ -29,14 +32,19 @@ class Map(private val onRoundEnd: () -> Unit, private val onScoreChange: (Int) -
 
         // draw next Tetromino
         context.fill = Color.BLACK
-        context.fillRect(11 * Field.SIZE, Field.SIZE, 4 * Field.SIZE, 2 * Field.SIZE)
-        context.fill = Color.WHITE
-        context.fillRect(11 * Field.SIZE + 1, Field.SIZE + 1.0, 4 * Field.SIZE - 2, 2 * Field.SIZE - 2)
+        context.fillRect(11 * Field.SIZE - 1, Field.SIZE - 1, 4 * Field.SIZE + 2, 2 * Field.SIZE + 2)
+        for (i in 0..<4) {
+            for (j in 0..<2) {
+                Field(xIndex = 11 + i, yIndex = 1 + j, fieldColor = FieldColor.GRAY).render(canvas)
+            }
+        }
         nextTetromino.render(canvas)
 
         // draw score
-        context.fill = Color.BLACK
-        context.fillText("You have $score points!", 11 * Field.SIZE, 4 * Field.SIZE)
+        context.fill = Color.WHITESMOKE
+        context.font = Font(18.0)
+        context.fillText("You have $score point${if (score == 1) "" else "s"}!", 11 * Field.SIZE, 4.2 * Field.SIZE)
+        context.font = Font(12.0)
     }
 
     fun moveCurrentTetromino(direction: MoveDirection) {
