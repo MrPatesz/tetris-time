@@ -26,9 +26,6 @@ class Game : Application() {
     private lateinit var mainScene: Scene
     private lateinit var graphicsContext: GraphicsContext
 
-    // TODO load images
-    // private lateinit var space: Image
-
     private var highScores: MutableList<Pair<String, String>> = mutableListOf()
 
     private val highScoresTable: Table = Table("HighScores", highScores, 11, 5)
@@ -99,7 +96,6 @@ class Game : Application() {
 
         graphicsContext = canvas.graphicsContext2D
 
-        loadGraphics()
         loadHighScores()
 
         // Main loop
@@ -121,13 +117,6 @@ class Game : Application() {
                 latestKey = event.code
             }
         }
-    }
-
-    private fun loadGraphics() {
-        // prefixed with / to indicate that the files are
-        // in the root of the "resources" folder
-        // space = Image(getResource("/space.png"))
-        // sun = Image(getResource("/sun.png"))
     }
 
     private fun loadHighScores() {

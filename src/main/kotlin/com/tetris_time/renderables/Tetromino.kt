@@ -21,7 +21,7 @@ abstract class Tetromino(var fields: List<Field>) : Renderable {
         val xIndices = fields.map { it.xIndex - minXIndex }
         val yIndices = fields.map { it.yIndex - minYIndex }
 
-        val centerX = xIndices[1] // TODO other one, or custom center for each block?
+        val centerX = xIndices[1]
         val centerY = yIndices[1]
 
         return fields.mapIndexed { index, it ->

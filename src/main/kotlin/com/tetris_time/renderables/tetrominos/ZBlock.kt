@@ -6,9 +6,9 @@ import com.tetris_time.renderables.Tetromino
 
 class ZBlock : Tetromino(
     listOf(
-        Field(xIndex = 3, yIndex = 0, fieldColor = FieldColor.RED),
-        Field(xIndex = 4, yIndex = 1, fieldColor = FieldColor.RED),
-        Field(xIndex = 5, yIndex = 1, fieldColor = FieldColor.RED),
         Field(xIndex = 4, yIndex = 0, fieldColor = FieldColor.RED),
+        Field(xIndex = 5, yIndex = 1, fieldColor = FieldColor.RED),
+        Field(xIndex = 6, yIndex = 1, fieldColor = FieldColor.RED),
+        Field(xIndex = 5, yIndex = 0, fieldColor = FieldColor.RED),
     )
 )
