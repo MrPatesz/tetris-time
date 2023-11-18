@@ -13,6 +13,8 @@ class Map(private val onRoundEnd: () -> Unit) : Renderable {
     private var nextTetromino: Tetromino = getRandomTetromino()
     private var score = 0
 
+    fun getScore() = score
+
     override fun render(canvas: Canvas) {
         val context = canvas.graphicsContext2D
 

@@ -14,6 +14,7 @@ import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.KeyCode
 import javafx.stage.Stage
 import java.io.File
+import kotlin.random.Random
 
 class Game : Application() {
 
@@ -41,7 +42,7 @@ class Game : Application() {
         ), 11, 13
     )
 
-    private var map = Map { started = false }
+    private var map = Map(::onRoundEnd)
 
     private var lastSystemUpdateTime: Long = System.nanoTime()
 
@@ -53,6 +54,29 @@ class Game : Application() {
 
     private var started = false
 
+    private fun onRoundEnd() {
+        started = false
+        val score = map.getScore().toString()
+        val placement = highScores.indexOfFirst { it.second < score }
+
+        if (placement != -1) {
+            // TODO get name from player
+            val name = Random.nextBytes(32).toString()
+
+            highScores.add(placement, Pair("${placement + 1}. $name", score))
+
+            highScores.removeAt(10)
+
+            val fileContent =
+                highScores.filter { it.second != "" }.joinToString("\n") { "${it.first.drop(3)};${it.second}" }
+
+            val filePath = getResource("/highscores.txt").drop(6)
+            File(filePath).writeText(fileContent)
+
+            loadHighScores()
+        }
+    }
+
     override fun start(mainStage: Stage) {
         mainStage.title = "Tetris Time"
 
@@ -60,7 +84,7 @@ class Game : Application() {
         mainScene = Scene(root)
         mainStage.scene = mainScene
 
-        val canvas = Canvas(WIDTH.toDouble(), HEIGHT.toDouble())
+        val canvas = Canvas(WIDTH, HEIGHT)
         root.children.add(canvas)
 
         prepareActionHandlers()
@@ -99,6 +123,8 @@ class Game : Application() {
     }
 
     private fun loadHighScores() {
+        highScores.clear()
+
         var place = 1
 
         val filePath = getResource("/highscores.txt").drop(6)
@@ -143,8 +169,8 @@ class Game : Application() {
         when (latestKey) {
             null -> return
             KeyCode.ENTER -> {
-                if(!map.isMapEmpty()) {
-                    map = Map { started = false }
+                if (!map.isMapEmpty()) {
+                    map = Map(::onRoundEnd)
                 }
                 started = true
             }
