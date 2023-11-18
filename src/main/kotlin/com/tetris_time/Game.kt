@@ -13,6 +13,7 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.KeyCode
 import javafx.stage.Stage
+import java.io.File
 
 class Game : Application() {
 
@@ -27,12 +28,7 @@ class Game : Application() {
     // TODO load images
     // private lateinit var space: Image
 
-    private val highScores: List<Pair<String, String>> = mutableListOf<Pair<String, String>>().run {
-        for (i in 0..<10) {
-            add(Pair("${i + 1}.", ""))
-        }
-        toList()
-    }
+    private var highScores: MutableList<Pair<String, String>> = mutableListOf()
 
     private val highScoresTable: Table = Table("HighScores", highScores, 11, 5)
 
@@ -72,6 +68,7 @@ class Game : Application() {
         graphicsContext = canvas.graphicsContext2D
 
         loadGraphics()
+        loadHighScores()
 
         // Main loop
         object : AnimationTimer() {
@@ -99,6 +96,22 @@ class Game : Application() {
         // in the root of the "resources" folder
         // space = Image(getResource("/space.png"))
         // sun = Image(getResource("/sun.png"))
+    }
+
+    private fun loadHighScores() {
+        var place = 1
+
+        val filePath = getResource("/highscores.txt").drop(6)
+        File(filePath).forEachLine {
+            val strings = it.split(';')
+            val name = strings[0]
+            val score = strings[1]
+            highScores.add(Pair("${place++}. $name", score))
+        }
+
+        while (highScores.size != 10) {
+            highScores.add(Pair("${highScores.size}.", ""))
+        }
     }
 
     private fun tickAndRender(currentNanoTime: Long) {
