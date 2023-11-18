@@ -7,7 +7,7 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.paint.Color
 import kotlin.math.pow
 
-class Map : Renderable {
+class Map(private val onRoundEnd: () -> Unit) : Renderable {
     private val rows = Rows()
     private var currentTetromino: Tetromino = getRandomTetromino().also { it.place() }
     private var nextTetromino: Tetromino = getRandomTetromino()
@@ -43,7 +43,12 @@ class Map : Renderable {
         if (moveNotAllowed(newFields)) {
             if (direction == MoveDirection.DOWN) {
                 score += rows.placeTetromino(currentTetromino).toDouble().pow(2).toInt()
-                currentTetromino = nextTetromino.also { it.place() }
+                currentTetromino = nextTetromino.also {
+                    it.place()
+                    if(moveNotAllowed(it.fields)) {
+                        onRoundEnd()
+                    }
+                }
                 nextTetromino = getRandomTetromino()
             }
         } else {
@@ -59,11 +64,13 @@ class Map : Renderable {
         }
     }
 
-    fun moveNotAllowed(newFields: List<Field>): Boolean {
+    private fun moveNotAllowed(newFields: List<Field>): Boolean {
         val fieldOutOfBounds = newFields.find { it.xIndex !in 0..<10 || it.yIndex !in 0..<20 }
 
         return fieldOutOfBounds != null || rows.doFieldsClash(newFields)
     }
+
+    fun isMapEmpty() = rows.isEmpty()
 
     companion object {
         private val backgroundFields: List<Field> = mutableListOf<Field>().run {

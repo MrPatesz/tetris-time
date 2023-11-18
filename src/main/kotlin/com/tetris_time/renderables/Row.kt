@@ -22,10 +22,7 @@ class Row(private var yIndex: Int) : Renderable {
         fields.forEach { it.yIndex = yIndex }
     }
 
-    fun clear() {
-        check(isFilled())
-        fields.clear()
-    }
+    fun isEmpty() = fields.isEmpty()
 
     fun getYIndex() = yIndex
 

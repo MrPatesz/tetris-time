@@ -41,7 +41,7 @@ class Game : Application() {
         ), 11, 13
     )
 
-    private val map = Map()
+    private var map = Map { started = false }
 
     private var lastSystemUpdateTime: Long = System.nanoTime()
 
@@ -110,7 +110,7 @@ class Game : Application() {
         }
 
         while (highScores.size != 10) {
-            highScores.add(Pair("${highScores.size}.", ""))
+            highScores.add(Pair("${highScores.size + 1}.", ""))
         }
     }
 
@@ -142,7 +142,13 @@ class Game : Application() {
     private fun performInputUpdate() {
         when (latestKey) {
             null -> return
-            KeyCode.ENTER -> started = true
+            KeyCode.ENTER -> {
+                if(!map.isMapEmpty()) {
+                    map = Map { started = false }
+                }
+                started = true
+            }
+
             KeyCode.ESCAPE -> {
                 if (started) {
                     paused = !paused

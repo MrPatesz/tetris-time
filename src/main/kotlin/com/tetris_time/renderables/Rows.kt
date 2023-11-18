@@ -35,4 +35,6 @@ class Rows : Renderable {
             row!!.doesFieldClash(it)
         } != null
     }
+
+    fun isEmpty() = rows.all { it.isEmpty() }
 }
