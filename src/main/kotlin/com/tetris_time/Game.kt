@@ -28,10 +28,10 @@ class Game : Application() {
 
     private var highScores: MutableList<Pair<String, String>> = mutableListOf()
 
-    private val highScoresTable: Table = Table("HighScores", highScores, 11, 5)
+    private val highScoresTable: Table = Table("Scoreboard", highScores, 11, 5)
 
     private val legend: Table = Table(
-        "Legend", listOf(
+        "Controls", listOf(
             Pair("Enter", "Start"),
             Pair("Escape", "Stop/Resume"),
             Pair("Space", "Rotate"),
@@ -58,13 +58,13 @@ class Game : Application() {
 
         if (placement != -1) {
             val dialog = TextInputDialog()
-            dialog.title = "Provide Name"
-            dialog.headerText = "How would you like to appear on the ScoreBoard?"
+            dialog.title = "Congratulations!"
+            dialog.headerText = "How would you like to appear on the Scoreboard?"
             dialog.contentText = "Name:"
 
             dialog.setOnHidden {
                 val result = dialog.result
-                val name = result ?: "Unknown"
+                val name = result?.filter { it != ';' } ?: "Unknown"
 
                 highScores.add(placement, Pair("${placement + 1}. ${name.take(8)}", score))
 
