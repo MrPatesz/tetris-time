@@ -1,7 +1,9 @@
 package com.tetris_time
 
 import com.tetris_time.enums.MoveDirection
+import com.tetris_time.renderables.Field
 import com.tetris_time.renderables.Map
+import com.tetris_time.renderables.Table
 import javafx.animation.AnimationTimer
 import javafx.application.Application
 import javafx.event.EventHandler
@@ -16,8 +18,8 @@ import kotlin.Exception
 class Game : Application() {
 
     companion object {
-        private const val WIDTH = 10 * 40 + 40 + 4 * 40 // map + gap + next tetromino
-        private const val HEIGHT = 20 * 40
+        private const val WIDTH = 10 * Field.SIZE + Field.SIZE + 4 * Field.SIZE + Field.SIZE // map + gap + panel + gap
+        private const val HEIGHT = 20 * Field.SIZE
     }
 
     private lateinit var mainScene: Scene
@@ -25,6 +27,17 @@ class Game : Application() {
 
     // TODO load images
     // private lateinit var space: Image
+
+    private val highScores: List<Pair<String, String>> = listOf()
+
+    private val highScoresTable: Table = Table("HighScores", highScores, 11, 6)
+
+    private val legend: Table = Table("Legend", listOf(
+        Pair("Enter", "Start"),
+        Pair("Escape", "Pause/Resume"),
+        Pair("Space", "Rotate"),
+        Pair("Arrows", "Move"),
+    ), 11, 12)
 
     private val map = Map()
 
@@ -101,10 +114,10 @@ class Game : Application() {
         map.render(graphicsContext.canvas)
 
         // draw scoreboard
-        // TODO
+        highScoresTable.render(graphicsContext.canvas)
 
-        // draw start/pause buttons
-        // TODO
+        // draw legend
+        legend.render(graphicsContext.canvas)
     }
 
     private fun performInputUpdate() {

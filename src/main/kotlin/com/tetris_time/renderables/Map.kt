@@ -14,6 +14,8 @@ class Map : Renderable {
     private var score = 0
 
     override fun render(canvas: Canvas) {
+        val context = canvas.graphicsContext2D
+
         // draw background
         backgroundFields.forEach { it.render(canvas) }
 
@@ -24,12 +26,15 @@ class Map : Renderable {
         currentTetromino.render(canvas)
 
         // draw next Tetromino
+        context.fill = Color.BLACK
+        context.fillRect(11 * Field.SIZE, 0.0, 4 * Field.SIZE, 2 * Field.SIZE)
+        context.fill = Color.WHITE
+        context.fillRect(11 * Field.SIZE + 1, 1.0, 4 * Field.SIZE - 2, 2 * Field.SIZE - 2)
         nextTetromino.render(canvas)
 
         // draw score
-        val context = canvas.graphicsContext2D
         context.fill = Color.BLACK
-        context.fillText("You have ${score} points!", 11 * 40.0, 3 * 40.0)
+        context.fillText("You have $score points!", 11 * Field.SIZE, 3 * Field.SIZE)
     }
 
     fun moveCurrentTetromino(direction: MoveDirection) {

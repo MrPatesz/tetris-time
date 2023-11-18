@@ -11,16 +11,16 @@ data class Field(
     private val fieldColor: FieldColor,
 ) : Renderable {
     override fun render(canvas: Canvas) {
-        val x = WIDTH * xIndex
-        val y = HEIGHT * yIndex
+        val x = SIZE * xIndex
+        val y = SIZE * yIndex
 
         // TODO display picture of field
         //  context.drawImage(sun, sunX.toDouble(), sunY.toDouble())
         val context = canvas.graphicsContext2D
         context.fill = Color.BLACK
-        context.fillRect(x, y, WIDTH, HEIGHT)
+        context.fillRect(x, y, SIZE, SIZE)
         context.fill = fieldColor.color
-        context.fillRect(x + 1, y + 1, WIDTH - 2, HEIGHT - 2)
+        context.fillRect(x + 1, y + 1, SIZE - 2, SIZE - 2)
     }
 
     fun move(direction: MoveDirection) {
@@ -36,7 +36,6 @@ data class Field(
     }
 
     companion object {
-        const val WIDTH = 40.0
-        const val HEIGHT = 40.0
+        const val SIZE = 40.0
     }
 }
