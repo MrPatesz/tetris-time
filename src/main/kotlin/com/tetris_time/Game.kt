@@ -11,10 +11,10 @@ import javafx.scene.Group
 import javafx.scene.Scene
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
+import javafx.scene.control.TextInputDialog
 import javafx.scene.input.KeyCode
 import javafx.stage.Stage
 import java.io.File
-import kotlin.random.Random
 
 class Game : Application() {
 
@@ -60,20 +60,28 @@ class Game : Application() {
         val placement = highScores.indexOfFirst { it.second < score }
 
         if (placement != -1) {
-            // TODO get name from player
-            val name = Random.nextBytes(32).toString()
+            val dialog = TextInputDialog()
+            dialog.title = "Provide Name"
+            dialog.headerText = "How would you like to appear on the ScoreBoard?"
+            dialog.contentText = "Name:"
 
-            highScores.add(placement, Pair("${placement + 1}. $name", score))
+            dialog.setOnHidden {
+                val result = dialog.result
+                val name = result ?: "Unknown"
 
-            highScores.removeAt(10)
+                highScores.add(placement, Pair("${placement + 1}. ${name.take(8)}", score))
 
-            val fileContent =
-                highScores.filter { it.second != "" }.joinToString("\n") { "${it.first.drop(3)};${it.second}" }
+                highScores.removeAt(10)
 
-            val filePath = getResource("/highscores.txt").drop(6)
-            File(filePath).writeText(fileContent)
+                val fileContent =
+                    highScores.filter { it.second != "" }.joinToString("\n") { "${it.first.drop(3)};${it.second}" }
 
-            loadHighScores()
+                val filePath = getResource("/highscores.txt").drop(6)
+                File(filePath).writeText(fileContent)
+
+                loadHighScores()
+            }
+            dialog.show()
         }
     }
 
