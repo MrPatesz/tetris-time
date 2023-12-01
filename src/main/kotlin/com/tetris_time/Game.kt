@@ -71,13 +71,13 @@ class Game : Application() {
             }
 
             dialog.setOnHidden {
-                val name = dialog.result?.filter { it != ';' && it != '.' }?.take(8) ?: "Unknown"
+                val name = dialog.result?.filter { it != ';' }?.take(8) ?: "Unknown"
 
                 highScores.add(placement, Pair("${placement + 1}. $name", score))
                 highScores.removeAt(10)
 
                 val fileContent =
-                    highScores.filter { it.second != "" }.joinToString("\n") { "${it.first.split('.')[1].drop(1)};${it.second}" }
+                    highScores.filter { it.second != "" }.joinToString("\n") { "${it.first.substringAfter(' ')};${it.second}" }
 
                 val filePath = getResource("/highscores.txt").drop(6)
                 File(filePath).writeText(fileContent)
