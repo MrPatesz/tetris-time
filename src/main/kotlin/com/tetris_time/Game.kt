@@ -64,21 +64,20 @@ class Game : Application() {
         val placement = highScores.indexOfFirst { it.second < score }
 
         if (placement != -1) {
-            val dialog = TextInputDialog()
-            dialog.title = "Congratulations!"
-            dialog.headerText = "How would you like to appear on the Scoreboard?"
-            dialog.contentText = "Name:"
+            val dialog = TextInputDialog().apply {
+                title = "Congratulations!"
+                headerText = "How would you like to appear on the Scoreboard?"
+                contentText = "Name:"
+            }
 
             dialog.setOnHidden {
-                val result = dialog.result
-                val name = result?.filter { it != ';' } ?: "Unknown"
+                val name = dialog.result?.filter { it != ';' && it != '.' }?.take(8) ?: "Unknown"
 
-                highScores.add(placement, Pair("${placement + 1}. ${name.take(8)}", score))
-
+                highScores.add(placement, Pair("${placement + 1}. $name", score))
                 highScores.removeAt(10)
 
                 val fileContent =
-                    highScores.filter { it.second != "" }.joinToString("\n") { "${it.first.drop(3)};${it.second}" }
+                    highScores.filter { it.second != "" }.joinToString("\n") { "${it.first.split('.')[1].drop(1)};${it.second}" }
 
                 val filePath = getResource("/highscores.txt").drop(6)
                 File(filePath).writeText(fileContent)
